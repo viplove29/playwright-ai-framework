@@ -100,6 +100,31 @@ Automatically adapts when elements change or move
 ### 4. Visual AI
 Analyzes screenshots to validate UI state
 
+## CI/CD Integration
+
+This framework includes GitHub Actions workflow for automated testing and email notifications.
+
+### Quick Setup
+
+1. **Configure GitHub Secrets** (Settings → Secrets → Actions):
+   - `EMAIL_USERNAME` - Your Gmail address
+   - `EMAIL_PASSWORD` - Gmail App Password (not regular password)
+   - `EMAIL_TO` - Recipient email for test reports
+   - `ANTHROPIC_API_KEY` - Your Anthropic API key (optional)
+
+2. **Push to repository** - Tests run automatically
+
+3. **Receive email reports** with test results and artifacts
+
+### Features
+- ✅ Automated test execution on push/PR
+- 📧 Email notifications with HTML reports
+- 📊 Test artifacts and screenshots
+- 💬 PR comments with results
+- 🔄 Scheduled daily runs
+
+📖 **Detailed Setup Guide:** See [GITHUB_ACTIONS_SETUP.md](GITHUB_ACTIONS_SETUP.md)
+
 ## Contributing
 
 Contributions welcome! Please read our contributing guidelines.

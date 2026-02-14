@@ -100,6 +100,15 @@ Automatically adapts when elements change or move
 ### 4. Visual AI
 Analyzes screenshots to validate UI state
 
+## 📚 Documentation
+
+- **[Team Onboarding Guide](TEAM_ONBOARDING.md)** - Complete guide for team members
+- **[Team Presentation](TEAM_PRESENTATION.md)** - Slide deck for team demos
+- **[GitHub Actions Setup](GITHUB_ACTIONS_SETUP.md)** - Detailed CI/CD configuration
+- **[Secrets Configuration](SECRETS_SETUP.md)** - Quick secrets reference
+- **[Architecture](ARCHITECTURE.md)** - Technical design details
+- **[Examples](EXAMPLES.md)** - Code examples and patterns
+
 ## CI/CD Integration
 
 This framework includes GitHub Actions workflow for automated testing and email notifications.

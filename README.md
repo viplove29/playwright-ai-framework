@@ -1,0 +1,109 @@
+# AI-Assisted Playwright Automation Framework
+
+An intelligent UI automation framework that combines Playwright with AI capabilities for self-healing tests, smart element detection, and visual validation.
+
+## Features
+
+- 🤖 **AI-Powered Element Detection**: Uses Claude API for intelligent element identification
+- 🔄 **Self-Healing Tests**: Automatically adapts to UI changes
+- 👁️ **Visual AI Validation**: Screenshot analysis and visual regression testing
+- 📊 **Smart Reporting**: AI-generated test insights and failure analysis
+- 🎯 **Natural Language Test Writing**: Write tests in plain English
+- 🛡️ **Robust Element Selection**: Multiple fallback strategies for element location
+
+## Architecture
+
+```
+playwright-ai-framework/
+├── src/
+│   ├── core/
+│   │   ├── ai-engine.js          # Claude API integration
+│   │   ├── browser-manager.js    # Playwright browser management
+│   │   └── element-finder.js     # AI-powered element detection
+│   ├── helpers/
+│   │   ├── visual-ai.js          # Screenshot analysis
+│   │   ├── self-healing.js       # Auto-recovery mechanisms
+│   │   └── reporting.js          # AI-enhanced reporting
+│   └── tests/
+│       └── example.spec.js       # Sample test cases
+├── config/
+│   └── playwright.config.js      # Playwright configuration
+├── utils/
+│   └── logger.js                 # Logging utility
+└── package.json
+```
+
+## Installation
+
+```bash
+npm install
+```
+
+## Configuration
+
+Set up your environment variables:
+
+```bash
+# .env file
+ANTHROPIC_API_KEY=your_api_key_here
+HEADLESS=false
+TIMEOUT=30000
+```
+
+## Usage
+
+### Basic Test Example
+
+```javascript
+const { test } = require('./src/core/ai-test-runner');
+
+test('AI-assisted login test', async ({ aiPage }) => {
+  await aiPage.navigateTo('https://example.com/login');
+  
+  // AI will find and interact with elements using natural descriptions
+  await aiPage.fillField('email or username field', 'user@example.com');
+  await aiPage.fillField('password field', 'password123');
+  await aiPage.clickElement('login button');
+  
+  // AI validates the outcome
+  await aiPage.verifyElement('dashboard or welcome message');
+});
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run specific test
+npm test -- tests/login.spec.js
+
+# Run with headed browser
+npm test -- --headed
+
+# Generate AI-powered report
+npm run report
+```
+
+## Key Components
+
+### 1. AI Engine
+Integrates with Claude API for intelligent automation decisions
+
+### 2. Element Finder
+Uses multiple strategies to locate elements with AI fallback
+
+### 3. Self-Healing
+Automatically adapts when elements change or move
+
+### 4. Visual AI
+Analyzes screenshots to validate UI state
+
+## Contributing
+
+Contributions welcome! Please read our contributing guidelines.
+
+## License
+
+MIT

@@ -130,7 +130,7 @@ npm run install:browsers
 cp .env.example .env
 # Add your Anthropic API key to .env
 ```
-# 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
+
 ### Step 3: Run
 ```bash
 npm test -- example.spec.js

@@ -43,12 +43,15 @@ class ElementFinder {
     }
 
     // Try standard strategies first
+    // Use shorter timeout for each strategy to allow all to be tried
+    const strategyTimeout = Math.min(timeout / 6, 5000); // Max 5 seconds per strategy
+    
     const strategies = [
-      () => this.findByText(description, timeout),
-      () => this.findByRole(description, timeout),
-      () => this.findByPlaceholder(description, timeout),
-      () => this.findByLabel(description, timeout),
-      () => this.findByTestId(description, timeout)
+      () => this.findByTestId(description, strategyTimeout),
+      () => this.findByLabel(description, strategyTimeout),
+      () => this.findByPlaceholder(description, strategyTimeout),
+      () => this.findByRole(description, strategyTimeout),
+      () => this.findByText(description, strategyTimeout)
     ];
 
     for (const strategy of strategies) {
@@ -248,16 +251,39 @@ class ElementFinder {
     const testIdPatterns = [
       description.toLowerCase().replace(/\s+/g, '-'),
       description.toLowerCase().replace(/\s+/g, '_'),
-      description.replace(/\s+/g, '')
+      description.replace(/\s+/g, ''),
+      description // Also try the exact description
     ];
 
     for (const testId of testIdPatterns) {
       try {
+        // Try data-testid attribute
         const element = await this.page.getByTestId(testId);
         await element.waitFor({ state: 'visible', timeout });
         return element;
       } catch (error) {
-        continue;
+        // Try id attribute
+        try {
+          const elementById = await this.page.locator(`#${testId}`);
+          await elementById.waitFor({ state: 'visible', timeout });
+          return elementById;
+        } catch (idError) {
+          // Try data-test attribute
+          try {
+            const elementByDataTest = await this.page.locator(`[data-test="${testId}"]`);
+            await elementByDataTest.waitFor({ state: 'visible', timeout });
+            return elementByDataTest;
+          } catch (dataTestError) {
+            // Try class name
+            try {
+              const elementByClass = await this.page.locator(`.${testId}`);
+              await elementByClass.first().waitFor({ state: 'visible', timeout });
+              return elementByClass.first();
+            } catch (classError) {
+              continue;
+            }
+          }
+        }
       }
     }
     return null;

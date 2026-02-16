@@ -2,14 +2,27 @@
 
 An intelligent UI automation framework that combines Playwright with AI capabilities for self-healing tests, smart element detection, and visual validation.
 
+## 🎭 NEW: Test Agents (Planner, Generator, Healer)
+
+**Boost your test automation by 10x** with AI-powered test agents:
+- **🎭 Planner Agent**: Create detailed test plans from natural language descriptions
+- **🎭 Generator Agent**: Generate executable test code automatically
+- **🎭 Healer Agent**: Analyze failures and auto-fix broken tests
+
+👉 **[Test Agents Guide](TEST_AGENTS_GUIDE.md)** | **[Quick Reference](TEST_AGENTS_QUICK_REF.md)**
+
+Works with **FREE local LLM (Ollama)**! See [Local LLM Setup](LOCAL_LLM_SETUP.md).
+
 ## Features
 
-- 🤖 **AI-Powered Element Detection**: Uses Claude API for intelligent element identification
+- 🤖 **AI-Powered Element Detection**: Uses AI (Claude/Local LLM) for intelligent element identification
 - 🔄 **Self-Healing Tests**: Automatically adapts to UI changes
+- 🎭 **Test Agents**: AI planning, code generation, and test healing
 - 👁️ **Visual AI Validation**: Screenshot analysis and visual regression testing
 - 📊 **Smart Reporting**: AI-generated test insights and failure analysis
 - 🎯 **Natural Language Test Writing**: Write tests in plain English
 - 🛡️ **Robust Element Selection**: Multiple fallback strategies for element location
+- 💰 **FREE AI Option**: Use local LLM (Ollama) - no API costs!
 
 ## Architecture
 

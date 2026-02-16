@@ -336,6 +336,64 @@ Provide analysis in JSON:
     }
   }
 
+  /**
+   * General-purpose AI query method for test agents
+   * @param {string} prompt - The prompt to send to the AI
+   * @param {Object} options - Query options
+   * @returns {Promise<string>} - AI response
+   */
+  async query(prompt, options = {}) {
+    if (this.provider === 'disabled') {
+      throw new Error('AI is disabled.');
+    }
+
+    const { maxTokens = 2000, temperature = 0.1, systemMessage = null } = options;
+
+    try {
+      let response;
+      
+      if (this.provider === 'anthropic') {
+        const messages = [{ role: 'user', content: prompt }];
+        
+        response = await this.client.messages.create({
+          model: this.model,
+          max_tokens: maxTokens,
+          temperature: temperature,
+          messages: messages
+        });
+        
+        return response.content[0].text;
+        
+      } else if (this.provider === 'local') {
+        const messages = [];
+        
+        if (systemMessage) {
+          messages.push({ role: 'system', content: systemMessage });
+        } else {
+          messages.push({ 
+            role: 'system', 
+            content: 'You are a helpful AI assistant for test automation. Respond with valid JSON when requested.' 
+          });
+        }
+        
+        messages.push({ role: 'user', content: prompt });
+        
+        response = await this.client.chat.completions.create({
+          model: this.model,
+          messages: messages,
+          temperature: temperature,
+          max_tokens: maxTokens
+        });
+        
+        return response.choices[0].message.content;
+      }
+      
+    } catch (error) {
+      logger.error(`AI query error: ${error.message}`);
+      throw error;
+    }
+  }
+
   clearHistory() {
     this.conversationHistory = [];
   }

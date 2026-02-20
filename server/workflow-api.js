@@ -464,8 +464,12 @@ app.post('/api/workflow/execute-tests', async (req, res) => {
       console.log(`[SELF-HEAL] Attempt ${attempt}/${maxRetries}`);
 
       try {
-        const command = `npx playwright test "${testPath}" --config=config/playwright.config.js --project=chromium`;
+        // Add --headed flag for local development (not on Railway)
+        const isLocalDev = !process.env.RAILWAY_STATIC_URL && !process.env.RAILWAY_ENVIRONMENT_NAME;
+        const headedFlag = isLocalDev ? '--headed' : '';
+        const command = `npx playwright test "${testPath}" --config=config/playwright.config.js --project=chromium ${headedFlag}`.trim();
         console.log(`[DEBUG] Executing: ${command}`);
+        console.log(`[DEBUG] Running in headed mode: ${isLocalDev}`);
 
         const startTime = Date.now();
         let stdout, stderr;

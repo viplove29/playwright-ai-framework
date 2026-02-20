@@ -223,6 +223,16 @@ const WorkflowUI = () => {
         });
       }
       
+      // Show video links if available (right after test results)
+      if (executionData.videos && executionData.videos.length > 0) {
+        addLog('', 'info'); // Empty line for spacing
+        addLog('📹 Test Execution Videos:', 'info');
+        executionData.videos.forEach(videoPath => {
+          addLog(`   📁 ${videoPath}`, 'info');
+        });
+        addLog('', 'info'); // Empty line for spacing
+      }
+      
       // Show healing status if applied
       if (executionData.healingApplied && executionData.healingDetails) {
         const details = executionData.healingDetails;

@@ -107,13 +107,13 @@ A complete, production-ready **React-based web interface** for the Playwright AI
 
 ### Launcher Scripts
 
-- ✅ `start-ui.ps1` - PowerShell launcher
+- ✅ `scripts/start-ui.ps1` - PowerShell launcher
   - Auto-installs dependencies
   - Starts backend in new window
   - Starts frontend in new window
   - Provides status updates
 
-- ✅ `start-ui.bat` - Windows batch launcher
+- ✅ `scripts/start-ui.bat` - Windows batch launcher
   - Same functionality as PowerShell script
   - Works from Command Prompt
 
@@ -192,7 +192,7 @@ Total Lines of Code: ~2,900+
 
 1. **Launch the UI**
    ```powershell
-   .\start-ui.ps1
+   .\scripts\start-ui.ps1
    ```
 
 2. **Enter Story ID**
@@ -350,7 +350,7 @@ All objectives achieved:
 ### To Use Locally:
 ```powershell
 # 1. Launch the UI
-.\start-ui.ps1
+.\scripts\start-ui.ps1
 
 # 2. Open browser (auto-opens)
 http://localhost:3000

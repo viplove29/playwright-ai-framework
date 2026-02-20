@@ -833,10 +833,10 @@ All critical flows verified ✓
 
 ```powershell
 # Windows PowerShell
-.\start-ui.ps1
+.\scripts\start-ui.ps1
 
 # Or Windows Command Prompt
-start-ui.bat
+scripts\start-ui.bat
 ```
 
 This will:

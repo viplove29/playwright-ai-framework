@@ -16,19 +16,19 @@ test.describe('ED-2: Verify H1 Headline on Endpoint Clinical', () => {
 
   test('Test Case 1: Verify H1 contains "Your hidden advantage in RTSM"', async () => {
     try {
-      // Navigate to the target URL with a timeout
+      // Navigate to the target URL with a timeout for navigation
       await page.goto('https://www.endpointclinical.com', { waitUntil: 'domcontentloaded', timeout: 10000 });
 
       // Locate the H1 element
-      const h1Element = page.locator('h1');
+      const h1Locator = page.locator('h1');
 
       // Assert that the H1 element is visible
-      await expect(h1Element).toBeVisible();
+      await expect(h1Locator).toBeVisible();
 
       // Get the text content of the H1 element
-      const h1Text = await h1Element.textContent();
+      const h1Text = await h1Locator.textContent();
 
-      // Verify that the H1 text contains the required keywords
+      // Verify that the H1 contains the required keywords
       expect(h1Text).toContain('hidden');
       expect(h1Text).toContain('advantage');
       expect(h1Text).toContain('RTSM');

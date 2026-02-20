@@ -17,6 +17,9 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+// Serve test-results folder as static files (for video access)
+app.use('/test-results', express.static(path.join(__dirname, '..', 'test-results')));
+
 // Initialize integrations
 const jiraClient = new JiraIntegration();
 const testrailClient = new TestRailIntegration();

@@ -226,9 +226,11 @@ const WorkflowUI = () => {
       // Show video links if available (right after test results)
       if (executionData.videos && executionData.videos.length > 0) {
         addLog('', 'info'); // Empty line for spacing
-        addLog('📹 Test Execution Videos:', 'info');
+        addLog('📹 Test Execution Videos (click to open):', 'info');
         executionData.videos.forEach(videoPath => {
-          addLog(`   📁 ${videoPath}`, 'info');
+          // Convert file path to clickable URL
+          const videoUrl = `${API_BASE_URL}/${videoPath}`;
+          addLog(`   🎬 ${videoUrl}`, 'info');
         });
         addLog('', 'info'); // Empty line for spacing
       }

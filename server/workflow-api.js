@@ -857,34 +857,49 @@ async function applyTestHealing({ filename, testCases, storyId, errorOutput, att
     // Extract the healed code from the analysis
     let healedScript;
     
-    if (typeof healingAnalysis === 'string') {
-      // If the healer returned code directly
-      healedScript = healingAnalysis;
-    } else if (healingAnalysis.fixedCode) {
+    // Check if we got actual code back (has fixedCode property or solutions array)
+    if (healingAnalysis.fixedCode) {
       // If it returned an object with fixedCode
       healedScript = healingAnalysis.fixedCode;
     } else if (healingAnalysis.solutions && healingAnalysis.solutions[0]) {
       // If it returned solutions array
       healedScript = healingAnalysis.solutions[0].code || healingAnalysis.solutions[0];
     } else {
-      // Fallback: use the original healing analysis as instructions to regenerate
-      console.log('[SELF-HEAL] Healer provided analysis, regenerating code...');
+      // Healer provided analysis only (not code) - regenerate the test
+      console.log('[SELF-HEAL] ⚙️ Healer provided analysis, regenerating complete test code...');
       
-      const regeneratePrompt = `${healingAnalysis}
+      // Convert analysis to string if it's an object
+      const analysisText = typeof healingAnalysis === 'object' 
+        ? JSON.stringify(healingAnalysis, null, 2) 
+        : healingAnalysis;
+      
+      const regeneratePrompt = `You are a Playwright test code generator. Based on this test failure analysis, generate a COMPLETE, WORKING test file.
 
-Based on this analysis, generate a COMPLETE, FIXED Playwright test file for:
+FAILURE ANALYSIS:
+${analysisText}
 
+ORIGINAL TEST REQUIREMENTS:
 Story ID: ${storyId}
 Test Cases:
 ${JSON.stringify(testCases, null, 2)}
 
-**Critical Fixes Required:**
-${errors.strictModeViolations.length > 0 ? '- Add .first() to all multi-match locators' : ''}
+CRITICAL FIXES TO APPLY:
+${errors.strictModeViolations.length > 0 ? '- Add .first() to all multi-match locators to handle strict mode violations' : ''}
 ${errors.navigationIssues ? '- Increase navigation timeout to 30000ms' : ''}
-${errors.cssIssues.length > 0 ? '- Remove CSS exact value assertions, use visibility checks instead' : ''}
-${errors.selectorIssues.length > 0 ? '- Improve selector reliability and add wait conditions' : ''}
+${errors.cssIssues.length > 0 ? '- Remove CSS exact value assertions, use visibility/existence checks instead' : ''}
+${errors.selectorIssues.length > 0 ? '- Use more reliable selectors with proper wait conditions' : ''}
+${errors.textMismatches.length > 0 ? '- Use flexible text matching (contains, not exact match)' : ''}
 
-Return ONLY the complete, executable test code.`;
+REQUIREMENTS:
+1. Generate COMPLETE test code (not snippets)
+2. Include all imports: const { test, expect } = require('@playwright/test');
+3. Include test.describe() wrapper
+4. Apply ALL the fixes listed above
+5. Add proper error handling with try/catch
+6. Add console.log for debugging
+7. Return ONLY executable JavaScript code (no markdown, no explanations)
+
+Generate the fixed test file now:`;
 
       healedScript = await testAgents.generateTest(regeneratePrompt, {
         url: 'https://www.endpointclinical.com',
@@ -894,6 +909,59 @@ Return ONLY the complete, executable test code.`;
 
     // Clean up the code if it has markdown formatting
     healedScript = healedScript.replace(/```javascript\n?/g, '').replace(/```\n?/g, '').trim();
+
+    // Validate that we have actual JavaScript code, not JSON analysis
+    const isValidJS = healedScript.includes('test(') || healedScript.includes('test.describe(');
+    const isJSON = healedScript.trim().startsWith('{') && 
+                   (healedScript.includes('"Root Cause Analysis"') || 
+                    healedScript.includes('"Specific Fix"') ||
+                    healedScript.includes('"Prevention Strategy"'));
+
+    if (isJSON || !isValidJS) {
+      console.error('[SELF-HEAL] ❌ ERROR: Healer returned JSON analysis instead of code!');
+      console.error('[SELF-HEAL] Attempting emergency regeneration...');
+      
+      // Emergency regeneration with explicit instructions
+      const emergencyPrompt = `Generate a complete Playwright test file for these requirements:
+
+Story: ${storyId}
+Test Cases: ${JSON.stringify(testCases, null, 2)}
+URL: https://www.endpointclinical.com
+
+CRITICAL: Return ONLY executable JavaScript code. Do NOT return JSON analysis.
+
+Must include:
+- const { test, expect } = require('@playwright/test');
+- test.describe() block
+- test() functions
+- Proper error handling
+
+Example structure:
+\`\`\`javascript
+const { test, expect } = require('@playwright/test');
+
+test.describe('Test Suite', () => {
+  test('Test Case 1', async ({ page }) => {
+    await page.goto('URL');
+    // test code
+  });
+});
+\`\`\`
+
+Generate the complete test file now:`;
+
+      healedScript = await testAgents.generateTest(emergencyPrompt, {
+        url: 'https://www.endpointclinical.com',
+        framework: 'playwright'
+      });
+      
+      healedScript = healedScript.replace(/```javascript\n?/g, '').replace(/```\n?/g, '').trim();
+      
+      // Final check
+      if (healedScript.trim().startsWith('{')) {
+        throw new Error('Healer Agent persistently returns JSON instead of code. Cannot auto-heal.');
+      }
+    }
 
     // Save the healed script (overwrite the failing one)
     await fs.writeFile(filepath, healedScript);

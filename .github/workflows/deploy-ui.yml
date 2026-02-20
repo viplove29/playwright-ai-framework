@@ -3,8 +3,7 @@ name: Deploy UI to GitHub Pages
 on:
   push:
     branches:
-      - main
-      - Mcp_with_test_rail_jira_api
+      - mcp_rail_jira_ui
     paths:
       - 'ui/**'
   workflow_dispatch:

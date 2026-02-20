@@ -2,7 +2,7 @@
   "name": "playwright-ai-workflow-ui",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://viplove29.github.io/playwright-ai-framework",
+  "homepage": "https://ascen-dion.github.io/AI-Assisted-Playwright-Automation-Framework",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

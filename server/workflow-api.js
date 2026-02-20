@@ -445,15 +445,36 @@ app.post('/api/workflow/execute-tests', async (req, res) => {
         console.log(`[DEBUG] Executing: ${command}`);
 
         const startTime = Date.now();
-        const { stdout } = await execPromise(command, {
-          cwd: path.join(__dirname, '..')
-        });
+        let stdout, stderr;
+        
+        try {
+          const result = await execPromise(command, {
+            cwd: path.join(__dirname, '..')
+          });
+          stdout = result.stdout;
+          stderr = result.stderr;
+        } catch (execError) {
+          // Capture output even when process fails
+          stdout = execError.stdout || '';
+          stderr = execError.stderr || '';
+          throw execError;
+        }
+        
         const duration = ((Date.now() - startTime) / 1000).toFixed(2);
 
         // Parse results
         const results = parsePlaywrightOutput(stdout);
 
-        // Success! Return results
+        // Check if any tests failed - if so, trigger self-healing
+        if (results.failed > 0) {
+          console.log(`[SELF-HEAL] Detected ${results.failed} failed tests, triggering self-healing`);
+          const error = new Error('Tests failed');
+          error.stdout = stdout;
+          error.stderr = stderr;
+          throw error;
+        }
+
+        // All tests passed! Return success
         return res.json({
           success: true,
           ...results,

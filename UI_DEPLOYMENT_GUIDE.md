@@ -62,7 +62,9 @@ git commit -m "Deploy UI to GitHub Pages"
 git push origin main
 ```
 
-**Deployment URL**: https://viplove29.github.io/playwright-ai-framework
+**Deployment URL**: https://ascen-dion.github.io/AI-Assisted-Playwright-Automation-Framework/
+
+⚠️ **Note**: This URL works after GitHub Pages is configured. See [GITHUB_PAGES_DEPLOYMENT.md](GITHUB_PAGES_DEPLOYMENT.md) for complete setup.
 
 ### Option B: Manual Deployment
 
@@ -76,7 +78,7 @@ npm run deploy
 
 ### Enable GitHub Pages
 
-1. Go to repository: https://github.com/viplove29/playwright-ai-framework
+1. Go to repository: https://github.com/Ascen-dion/AI-Assisted-Playwright-Automation-Framework
 2. Click **Settings** → **Pages**
 3. Source: **GitHub Actions**
 4. Save settings
@@ -86,7 +88,7 @@ npm run deploy
 1. Check GitHub Actions tab
 2. Wait for "Deploy UI to GitHub Pages" workflow
 3. Status should show ✅ green checkmark
-4. Visit: https://viplove29.github.io/playwright-ai-framework
+4. Visit: https://ascen-dion.github.io/AI-Assisted-Playwright-Automation-Framework/
 
 ## 🔧 Backend Hosting Options
 

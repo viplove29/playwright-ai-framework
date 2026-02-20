@@ -56,7 +56,7 @@ git push origin main
 ```
 
 GitHub Actions will automatically build and deploy to:
-- **URL**: https://viplove29.github.io/playwright-ai-framework
+- **URL**: https://ascen-dion.github.io/AI-Assisted-Playwright-Automation-Framework/
 
 ### Manual Deployment
 
@@ -174,7 +174,7 @@ npm run build
 
 ## 🎯 Usage Example
 
-1. Open the UI: `https://viplove29.github.io/playwright-ai-framework`
+1. Open the UI: https://ascen-dion.github.io/AI-Assisted-Playwright-Automation-Framework/
 2. Enter Story ID: `ED-2`
 3. Click **Run Workflow**
 4. Watch the progress indicators

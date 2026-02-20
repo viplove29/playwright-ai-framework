@@ -11,9 +11,9 @@ An intelligent UI automation framework that combines Playwright with AI capabili
 - **Results Dashboard**: Comprehensive execution metrics
 - **Hosted on GitHub Pages**: Access from anywhere!
 
-👉 **[Quick Start: Run the UI](#-web-ui-quick-start)** | **[Deployment Guide](UI_DEPLOYMENT_GUIDE.md)**
+👉 **[Quick Start: Run the UI](#-web-ui-quick-start)** | **[Deployment Guide](GITHUB_PAGES_DEPLOYMENT.md)**
 
-**Live Demo**: `https://viplove29.github.io/playwright-ai-framework` (after deployment)
+**Live Demo**: https://ascen-dion.github.io/AI-Assisted-Playwright-Automation-Framework/
 
 ## ⚡ OpenRouter Integration (50-100x Faster!)
 
@@ -870,7 +870,7 @@ git commit -m "Deploy UI"
 git push origin main
 ```
 
-Your UI will be live at: `https://viplove29.github.io/playwright-ai-framework`
+Your UI will be live at: https://ascen-dion.github.io/AI-Assisted-Playwright-Automation-Framework/
 
 👉 **[Full Deployment Guide](UI_DEPLOYMENT_GUIDE.md)** | **[Setup Instructions](UI_SETUP_GUIDE.md)**
 

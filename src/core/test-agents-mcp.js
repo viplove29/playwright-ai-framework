@@ -108,10 +108,16 @@ Format as structured markdown.`;
       // Try MCP first if enabled
       if (await this.isMCPAvailable()) {
         logger.info('📡 Using MCP for code generation');
-        const code = await this.mcpClient.generateCode(testDescription, {
+        let code = await this.mcpClient.generateCode(testDescription, {
           url: options.url,
           framework: options.framework || 'playwright-ai'
         });
+
+        // Extract code from markdown if present (MCP might return wrapped code)
+        const codeMatch = code.match(/```(?:javascript|js)?\n?([\s\S]*?)```/);
+        if (codeMatch) {
+          code = codeMatch[1].trim();
+        }
 
         // Save code if requested
         if (options.saveTo) {

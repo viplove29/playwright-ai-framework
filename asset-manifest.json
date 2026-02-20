@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/AI-Assisted-Playwright-Automation-Framework/static/css/main.4277876c.css",
+    "main.js": "/AI-Assisted-Playwright-Automation-Framework/static/js/main.0f021735.js",
+    "index.html": "/AI-Assisted-Playwright-Automation-Framework/index.html",
+    "main.4277876c.css.map": "/AI-Assisted-Playwright-Automation-Framework/static/css/main.4277876c.css.map",
+    "main.0f021735.js.map": "/AI-Assisted-Playwright-Automation-Framework/static/js/main.0f021735.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4277876c.css",
+    "static/js/main.0f021735.js"
+  ]
+}

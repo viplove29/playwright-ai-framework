@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - mcp_rail_jira_ui
-    paths:
-      - 'ui/**'
   workflow_dispatch:
 
 permissions:

@@ -400,7 +400,14 @@ Expected: ${tc.expected}
     // Save the generated script
     const filename = `${storyId.toLowerCase()}-automated.spec.js`;
     const filepath = path.join(__dirname, '..', 'src', 'tests', filename);
+    console.log(`[DEBUG] Saving test file to: ${filepath}`);
+    console.log(`[DEBUG] __dirname: ${__dirname}`);
     await fs.writeFile(filepath, testScript);
+    console.log(`[DEBUG] File saved successfully, size: ${testScript.length} bytes`);
+    
+    // Verify file exists
+    const fileExists = await fs.access(filepath).then(() => true).catch(() => false);
+    console.log(`[DEBUG] File exists check: ${fileExists}`);
 
     res.json({
       success: true,
@@ -431,6 +438,22 @@ app.post('/api/workflow/execute-tests', async (req, res) => {
     console.log(`[API] Executing tests with self-healing: ${filename}`);
 
     const testPath = `src/tests/${filename}`;
+    const fullTestPath = path.join(__dirname, '..', testPath);
+    console.log(`[DEBUG] Test path: ${testPath}`);
+    console.log(`[DEBUG] Full path: ${fullTestPath}`);
+    console.log(`[DEBUG] CWD will be: ${path.join(__dirname, '..')}`);
+    
+    // Verify test file exists before execution
+    const testFileExists = await fs.access(fullTestPath).then(() => true).catch(() => false);
+    console.log(`[DEBUG] Test file exists: ${testFileExists}`);
+    if (!testFileExists) {
+      console.error(`[ERROR] Test file not found at: ${fullTestPath}`);
+      // List files in directory
+      const testsDir = path.join(__dirname, '..', 'src', 'tests');
+      const files = await fs.readdir(testsDir);
+      console.log(`[DEBUG] Files in tests directory: ${files.join(', ')}`);
+    }
+    
     const maxRetries = 2;
     let attempt = 1;
     let lastResults = null;

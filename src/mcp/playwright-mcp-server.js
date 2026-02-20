@@ -267,7 +267,10 @@ Code requirements:
 
 Return ONLY the JavaScript code, no explanations.`;
 
-      const response = await this.aiEngine.query(prompt);
+      const response = await this.aiEngine.query(prompt, { 
+        maxTokens: 8000,  // Increased for complete test file generation
+        temperature: 0.1 
+      });
 
       // Extract code from markdown if present
       let code = response;

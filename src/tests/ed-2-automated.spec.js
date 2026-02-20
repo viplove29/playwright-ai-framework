@@ -1,34 +1,27 @@
 const { test, expect } = require('@playwright/test');
 
 test.describe('ED-2: Verify H1 Headline on Endpoint Clinical', () => {
-  let page;
+  
+  // Setup: Define the target URL
+  const targetUrl = 'https://www.endpointclinical.com';
 
-  test.beforeAll(async ({ browser }) => {
-    // Launch a new browser instance
-    const context = await browser.newContext();
-    page = await context.newPage();
+  test.beforeEach(async ({ page }) => {
+    // Navigate to the target URL with domcontentloaded for faster loading
+    await page.goto(targetUrl, { waitUntil: 'domcontentloaded' });
   });
 
-  test.afterAll(async () => {
-    // Close the browser context after tests
-    await page.close();
-  });
-
-  test('Test Case 1: Verify H1 contains "Your hidden advantage in RTSM"', async () => {
+  test('Test Case 1: Verify H1 Element Contains Correct Headline', async ({ page }) => {
     try {
-      // Navigate to the target URL with a timeout for navigation
-      await page.goto('https://www.endpointclinical.com', { waitUntil: 'domcontentloaded', timeout: 10000 });
-
       // Locate the H1 element
-      const h1Locator = page.locator('h1');
+      const h1Element = page.locator('h1');
 
       // Assert that the H1 element is visible
-      await expect(h1Locator).toBeVisible();
+      await expect(h1Element).toBeVisible();
 
       // Get the text content of the H1 element
-      const h1Text = await h1Locator.textContent();
+      const h1Text = await h1Element.textContent();
 
-      // Verify that the H1 contains the required keywords
+      // Verify that the headline contains the required keywords
       expect(h1Text).toContain('hidden');
       expect(h1Text).toContain('advantage');
       expect(h1Text).toContain('RTSM');
@@ -38,5 +31,10 @@ test.describe('ED-2: Verify H1 Headline on Endpoint Clinical', () => {
       console.error('Error during test execution:', error);
       throw error; // Rethrow the error to fail the test
     }
+  });
+
+  test.afterEach(async ({ page }) => {
+    // Teardown: Close the page if needed (optional)
+    await page.close();
   });
 });

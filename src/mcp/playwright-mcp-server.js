@@ -293,11 +293,13 @@ Return ONLY the JavaScript code, no explanations.`;
    */
   async handleAnalyzeFailure(args) {
     try {
-      logger.info(`🔍 MCP Tool: analyze_test_failure - ${args.errorMessage.substring(0, 50)}...`);
+      const errorMsg = args.errorMessage || args.error || 'Unknown error';
+      const errorPreview = typeof errorMsg === 'string' ? errorMsg.substring(0, 50) : String(errorMsg).substring(0, 50);
+      logger.info(`🔍 MCP Tool: analyze_test_failure - ${errorPreview}...`);
 
       const prompt = `You are an expert Playwright test debugger. Analyze this test failure and provide actionable fixes.
 
-Error Message: ${args.errorMessage}
+Error Message: ${errorMsg}
 
 ${args.testCode ? `Test Code:\n${args.testCode}\n` : ''}
 ${args.pageUrl ? `Page URL: ${args.pageUrl}` : ''}

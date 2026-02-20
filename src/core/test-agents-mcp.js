@@ -175,14 +175,18 @@ Return ONLY the JavaScript code, no explanations.`;
     logger.info('🔧 Healer Agent: Analyzing test failure...');
 
     try {
+      // Extract error message from context (handle both formats)
+      const errorMessage = context.errorMessage || context.error?.message || context.error?.stack || 'Unknown error';
+      const stackTrace = context.stackTrace || context.error?.stack || '';
+      
       // Try MCP first if enabled
       if (await this.isMCPAvailable()) {
         logger.info('📡 Using MCP for failure analysis');
-        const analysis = await this.mcpClient.analyzeFailure(context.errorMessage, {
+        const analysis = await this.mcpClient.analyzeFailure(errorMessage, {
           testCode: context.testCode,
           screenshot: context.screenshot,
-          pageUrl: context.pageUrl,
-          stackTrace: context.stackTrace
+          pageUrl: context.pageUrl || context.url,
+          stackTrace: stackTrace
         });
 
         return analysis;
@@ -192,11 +196,11 @@ Return ONLY the JavaScript code, no explanations.`;
       logger.info('🔄 Using direct AI engine for failure analysis');
       const prompt = `You are an expert Playwright test debugger. Analyze this test failure and provide actionable fixes.
 
-Error Message: ${context.errorMessage}
+Error Message: ${errorMessage}
 
 ${context.testCode ? `Test Code:\n${context.testCode}\n` : ''}
-${context.pageUrl ? `Page URL: ${context.pageUrl}` : ''}
-${context.stackTrace ? `Stack Trace:\n${context.stackTrace}` : ''}
+${context.pageUrl || context.url ? `Page URL: ${context.pageUrl || context.url}` : ''}
+${stackTrace ? `Stack Trace:\n${stackTrace}` : ''}
 ${context.screenshot ? 'Screenshot: [Available for visual analysis]' : ''}
 
 Provide:

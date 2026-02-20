@@ -14,6 +14,28 @@
   flex: 1;
 }
 
+@keyframes iconGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.6),
+                0 0 40px rgba(20, 184, 166, 0.3),
+                inset 0 0 20px rgba(20, 184, 166, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(20, 184, 166, 0.8),
+                0 0 60px rgba(20, 184, 166, 0.5),
+                inset 0 0 30px rgba(20, 184, 166, 0.4);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .step-icon {
   width: 60px;
   height: 60px;
@@ -24,29 +46,52 @@
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  transition: all 0.3s;
+  transition: all 0.5s ease;
   position: relative;
   z-index: 2;
 }
 
+.step-icon::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent, rgba(20, 184, 166, 0.4), transparent);
+  opacity: 0;
+  transition: opacity 0.5s;
+  animation: rotate 2s linear infinite;
+}
+
 .step.active .step-icon {
-  background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
   border-color: transparent;
-  animation: pulse 1.5s infinite;
+  animation: pulse 1.5s infinite, iconGlow 2s ease-in-out infinite;
+  transform: scale(1.1);
+}
+
+.step.active .step-icon::before {
+  opacity: 1;
 }
 
 .step.completed .step-icon {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
   border-color: transparent;
   animation: none;
+  box-shadow: 0 0 20px rgba(20, 184, 166, 0.4);
+  transform: scale(1.05);
 }
 
 @keyframes pulse {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7);
+    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.7),
+                0 0 20px rgba(20, 184, 166, 0.5);
   }
   50% {
-    box-shadow: 0 0 0 10px rgba(168, 85, 247, 0);
+    box-shadow: 0 0 0 15px rgba(20, 184, 166, 0),
+                0 0 30px rgba(20, 184, 166, 0.7);
   }
 }
 
@@ -75,7 +120,7 @@
 }
 
 .step.completed .step-connector {
-  background: linear-gradient(to right, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(to right, #14b8a6 0%, #0d9488 100%);
 }
 
 .step:last-child .step-connector {

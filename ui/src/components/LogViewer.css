@@ -38,7 +38,7 @@
 }
 
 .log-entry.info .log-message {
-  color: #a5b4fc;
+  color: #5eead4;
 }
 
 .log-entry.success .log-message {
@@ -55,14 +55,14 @@
 }
 
 .log-link {
-  color: #93c5fd;
+  color: #5eead4;
   text-decoration: underline;
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .log-link:hover {
-  color: #bfdbfe;
+  color: #99f6e4;
   text-decoration: none;
 }
 

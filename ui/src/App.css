@@ -1,39 +1,172 @@
+@keyframes backgroundShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(20, 184, 166, 0.5),
+                 0 0 40px rgba(20, 184, 166, 0.3),
+                 0 0 60px rgba(20, 184, 166, 0.2);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(20, 184, 166, 0.8),
+                 0 0 60px rgba(20, 184, 166, 0.5),
+                 0 0 90px rgba(20, 184, 166, 0.3);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes matrixRain {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
 .App {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #e9d5ff 0%, #ddd6fe 50%, #c7d2fe 100%);
+  background: #000000;
+  position: relative;
+  overflow: hidden;
 }
 
-.App-header {
-  background: transparent;
+.App::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(90deg, 
+      rgba(139, 92, 246, 0.03) 0%,
+      rgba(168, 85, 247, 0.02) 10%,
+      transparent 30%,
+      transparent 70%,
+      rgba(20, 184, 166, 0.02) 90%,
+      rgba(20, 184, 166, 0.03) 100%
+    );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.App::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(139, 92, 246, 0.03) 2px, rgba(139, 92, 246, 0.03) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(20, 184, 166, 0.03) 2px, rgba(20, 184, 166, 0.03) 4px);
+  pointer-events: none;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+/* Matrix rain effect */
+.matrix-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.matrix-column {
+  position: absolute;
+  top: -100%;
+  width: 20px;
+  height: 100%;
+  background: linear-gradient(180deg, 
+    transparent 0%,
+    currentColor 50%,
+    transparent 100%
+  );
+  opacity: 0.6;
+  animation: matrixRain linear infinite;
+}
+
+.matrix-column:nth-child(1) { left: 5%; color: #8b5cf6; animation-duration: 15s; animation-delay: 0s; }
+.matrix-column:nth-child(2) { left: 12%; color: #a855f7; animation-duration: 18s; animation-delay: 2s; height: 80%; }
+.matrix-column:nth-child(3) { left: 18%; color: #9333ea; animation-duration: 20s; animation-delay: 5s; height: 120%; }
+.matrix-column:nth-child(4) { left: 25%; color: #7c3aed; animation-duration: 22s; animation-delay: 1s; }
+.matrix-column:nth-child(5) { left: 32%; color: #6366f1; animation-duration: 19s; animation-delay: 7s; height: 90%; }
+.matrix-column:nth-child(6) { left: 40%; color: #4f46e5; animation-duration: 17s; animation-delay: 3s; }
+.matrix-column:nth-child(7) { left: 48%; color: #3b82f6; animation-duration: 21s; animation-delay: 6s; height: 110%; }
+.matrix-column:nth-child(8) { left: 55%; color: #06b6d4; animation-duration: 16s; animation-delay: 4s; }
+.matrix-column:nth-child(9) { left: 62%; color: #14b8a6; animation-duration: 23s; animation-delay: 8s; height: 95%; }
+.matrix-column:nth-child(10) { left: 70%; color: #10b981; animation-duration: 18s; animation-delay: 2s; }
+.matrix-column:nth-child(11) { left: 77%; color: #14b8a6; animation-duration: 20s; animation-delay: 9s; height: 105%; }
+.matrix-column:nth-child(12) { left: 85%; color: #06b6d4; animation-duration: 19s; animation-delay: 5s; }
+.matrix-column:nth-child(13) { left: 92%; color: #0d9488; animation-duration: 17s; animation-delay: 1s; height: 115%; }
+.matrix-column:nth-child(14) { left: 8%; color: #a855f7; animation-duration: 24s; animation-delay: 10s; }
+.matrix-column:nth-child(15) { left: 45%; color: #14b8a6; animation-duration: 16s; animation-delay: 3s; height: 85%; }
+
+.App-header {  background: transparent;
   padding: 2.5rem 2rem;
   text-align: center;
   position: relative;
+  z-index: 10;
+  animation: fadeInUp 1s ease-out;
 }
 
 .brand-logo {
   font-size: 2rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #ffffff;
   margin-bottom: 1rem;
   letter-spacing: -1px;
+  animation: glow 3s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+
+.brand-logo:hover {
+  transform: scale(1.05);
 }
 
 .App-header h1 {
   font-size: 3rem;
   margin-bottom: 0.75rem;
   font-weight: 400;
-  background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #7c3aed 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
   line-height: 1.2;
+  animation: glow 4s ease-in-out infinite;
 }
 
 .App-header p {
   font-size: 1.25rem;
-  color: #475569;
+  color: #a0a0a0;
   font-weight: 400;
   margin-top: 0.5rem;
 }
@@ -44,13 +177,17 @@
   justify-content: center;
   align-items: center;
   padding: 2rem;
+  position: relative;
+  z-index: 10;
 }
 
 .App-footer {
   background: transparent;
   padding: 1.5rem;
   text-align: center;
-  color: #64748b;
+  color: #6b7280;
   font-size: 0.9rem;
   font-weight: 500;
+  position: relative;
+  z-index: 10;
 }

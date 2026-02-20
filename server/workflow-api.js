@@ -370,10 +370,56 @@ app.post('/api/workflow/generate-scripts', async (req, res) => {
 
     console.log(`[API] 💻 Using Generator Agent to create Playwright scripts for ${storyId}`);
 
+    // Extract URL from test cases (look in title, steps, and expected fields)
+    let targetUrl = null;
+    const urlPattern = /https?:\/\/[^\s<>"{}|\\^`\[\]]+/gi;
+    
+    for (const tc of testCases) {
+      // Check title
+      const titleMatch = (tc.title || '').match(urlPattern);
+      if (titleMatch) {
+        targetUrl = titleMatch[0];
+        break;
+      }
+      // Check steps
+      const stepsMatch = (tc.steps || '').match(urlPattern);
+      if (stepsMatch) {
+        targetUrl = stepsMatch[0];
+        break;
+      }
+      // Check expected
+      const expectedMatch = (tc.expected || '').match(urlPattern);
+      if (expectedMatch) {
+        targetUrl = expectedMatch[0];
+        break;
+      }
+    }
+    
+    // If no URL found in test cases, try to extract from story description
+    if (!targetUrl) {
+      // Check for common website names and convert to URLs
+      const allText = testCases.map(tc => `${tc.title} ${tc.steps} ${tc.expected}`).join(' ').toLowerCase();
+      
+      if (allText.includes('facebook')) {
+        targetUrl = 'https://www.facebook.com';
+      } else if (allText.includes('google')) {
+        targetUrl = 'https://www.google.com';
+      } else if (allText.includes('yahoo')) {
+        targetUrl = 'https://www.yahoo.com';
+      } else if (allText.includes('endpoint') || allText.includes('endpointclinical')) {
+        targetUrl = 'https://www.endpointclinical.com';
+      } else {
+        // Default fallback
+        targetUrl = 'https://example.com';
+      }
+    }
+    
+    console.log(`[API] 🎯 Target URL extracted: ${targetUrl}`);
+
     // Prepare test description for Generator Agent
     const testDescription = `
 Story ID: ${storyId}
-Target URL: https://www.endpointclinical.com
+Target URL: ${targetUrl}
 
 Test Cases:
 ${testCases.map((tc, i) => `
@@ -381,18 +427,11 @@ Test Case ${i + 1}: ${tc.title}
 Steps: ${tc.steps}
 Expected: ${tc.expected}
 `).join('\n')}
-
-**IMPORTANT Page-Specific Instructions:**
-1. H1 Element: Contains text "Your hiddenadvantagein RTSM" (no spaces in HTML)
-2. Use flexible selectors: page.locator('h1') NOT exact text matching
-3. Verify keywords individually: 'hidden', 'advantage', 'RTSM'
-4. Handle navigation timeouts gracefully
-5. Use domcontentloaded for faster page loads
 `;
 
     // Use Generator Agent to create test code with MCP support
     const testScript = await testAgents.generateTest(testDescription, {
-      url: 'https://www.endpointclinical.com',
+      url: targetUrl,
       framework: 'playwright',
       useAIPage: false,
       includeComments: true
@@ -854,6 +893,54 @@ async function applyTestHealing({ filename, testCases, storyId, errorOutput, att
     const filepath = path.join(__dirname, '..', 'src', 'tests', filename);
     const failingCode = await fs.readFile(filepath, 'utf-8');
 
+    // Extract URL from the failing test code (look for page.goto calls)
+    let targetUrl = null;
+    const gotoMatch = failingCode.match(/page\.goto\s*\(\s*['"]([^'"]+)['"]/);
+    if (gotoMatch) {
+      targetUrl = gotoMatch[1];
+    }
+    
+    // If not found in code, try to extract from test cases
+    if (!targetUrl) {
+      const urlPattern = /https?:\/\/[^\s<>"{}|\\^`\[\]]+/gi;
+      for (const tc of testCases) {
+        const titleMatch = (tc.title || '').match(urlPattern);
+        const stepsMatch = (tc.steps || '').match(urlPattern);
+        const expectedMatch = (tc.expected || '').match(urlPattern);
+        if (titleMatch) {
+          targetUrl = titleMatch[0];
+          break;
+        }
+        if (stepsMatch) {
+          targetUrl = stepsMatch[0];
+          break;
+        }
+        if (expectedMatch) {
+          targetUrl = expectedMatch[0];
+          break;
+        }
+      }
+    }
+    
+    // If still not found, check for common website names
+    if (!targetUrl) {
+      const allText = `${failingCode} ${testCases.map(tc => `${tc.title} ${tc.steps} ${tc.expected}`).join(' ')}`.toLowerCase();
+      
+      if (allText.includes('facebook')) {
+        targetUrl = 'https://www.facebook.com';
+      } else if (allText.includes('google')) {
+        targetUrl = 'https://www.google.com';
+      } else if (allText.includes('yahoo')) {
+        targetUrl = 'https://www.yahoo.com';
+      } else if (allText.includes('endpoint') || allText.includes('endpointclinical')) {
+        targetUrl = 'https://www.endpointclinical.com';
+      } else {
+        targetUrl = 'https://example.com';
+      }
+    }
+    
+    console.log(`[SELF-HEAL] 🎯 Target URL for healing: ${targetUrl}`);
+
     // Prepare context for Healer Agent
     const healingContext = {
       testCode: failingCode,
@@ -868,7 +955,7 @@ async function applyTestHealing({ filename, testCases, storyId, errorOutput, att
       testCases: testCases,
       storyId: storyId,
       attempt: attempt,
-      url: 'https://www.endpointclinical.com',
+      url: targetUrl,
       analysisDetails: {
         selectorIssues: errors.selectorIssues,
         textMismatches: errors.textMismatches,
@@ -941,7 +1028,7 @@ REQUIREMENTS:
 Generate the fixed test file now:`;
 
       healedScript = await testAgents.generateTest(regeneratePrompt, {
-        url: 'https://www.endpointclinical.com',
+        url: targetUrl,
         framework: 'playwright'
       });
     }
@@ -965,7 +1052,7 @@ Generate the fixed test file now:`;
 
 Story: ${storyId}
 Test Cases: ${JSON.stringify(testCases, null, 2)}
-URL: https://www.endpointclinical.com
+URL: ${targetUrl}
 
 CRITICAL: Return ONLY executable JavaScript code. Do NOT return JSON analysis.
 
@@ -990,7 +1077,7 @@ test.describe('Test Suite', () => {
 Generate the complete test file now:`;
 
       healedScript = await testAgents.generateTest(emergencyPrompt, {
-        url: 'https://www.endpointclinical.com',
+        url: targetUrl,
         framework: 'playwright'
       });
       
